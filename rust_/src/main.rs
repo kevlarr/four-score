@@ -1,17 +1,30 @@
 use std::io;
 use std::io::Write;
 
+struct Players(pub String, pub String);
+
 fn main() {
     println!("Welcome to FourScore!\n");
 
-    match get_player("First") {
-        Ok(name) => println!("Hello, {}!", name),
+    match new_players() {
+        Ok(players) => println!("{} and {}, sitting in a tree...", players.0, players.1),
         Err(e) => println!("Error: {:?}", e),
     }
 }
 
-fn get_player(nth: &str) -> Result<String, io::Error> {
-    print!("{} player: ", nth);
+fn new_players() -> Result<Players, io::Error> {
+    let first = input("First player")?;
+    let mut second = input("Second player")?;
+
+    while first == second {
+        second = input("Please use a unique name")?;
+    }
+
+    Ok(Players(first, second))
+}
+
+fn input(prompt: &str) -> Result<String, io::Error> {
+    print!("{}: ", prompt);
 
     // Need to print and then flush to keep read_line on same line
     io::stdout().flush()?;
