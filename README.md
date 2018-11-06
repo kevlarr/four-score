@@ -1,11 +1,10 @@
 # FourScore
 
 Learning new languages is fun.
-Comparing them against each other for similar tasks is even funner.
-
-So why not keep writing the same boring game?
+So why not keep writing the same boring game as an exercise?
 
 Enter Connect Four! Why the name Four Score though? I don't know.
+Who cares about names anyway? I mean, "Facebook", really?
 
 ## Requirements?
 
