@@ -11,5 +11,5 @@ pub struct Player {
     pub token: Token,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Token { X, O }

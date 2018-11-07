@@ -20,3 +20,23 @@ impl Board {
         Board { rows, columns, grid }
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let board = Board::new(4, 5);
+
+        assert_eq!(board.rows, 4);
+        assert_eq!(board.columns, 5);
+        assert_eq!(board.grid, vec![
+            vec![None, None, None, None, None],
+            vec![None, None, None, None, None],
+            vec![None, None, None, None, None],
+            vec![None, None, None, None, None],
+        ]);
+    }
+}
