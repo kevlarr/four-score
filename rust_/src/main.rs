@@ -24,8 +24,8 @@ struct Board {
 impl Board {
     fn new(rows: u8, columns: u8) -> Self {
         let grid = (0..rows)
-            .map(|_| (0..columns).map(|_| None).collect::<Row>())
-            .collect::<Grid>();
+            .map(|_| (0..columns).map(|_| None).collect())
+            .collect();
 
         Board { rows, columns, grid }
     }
