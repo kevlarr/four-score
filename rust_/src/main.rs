@@ -2,12 +2,34 @@ use std::io;
 use std::io::Write;
 
 type Input<T> = Result<T, io::Error>;
+type Row = Vec<Option<Token>>;
+type Grid = Vec<Row>;
 
 #[derive(Debug)]
-struct Players(pub String, pub String);
+struct Player {
+    pub name: String,
+    pub token: Token,
+}
 
 #[derive(Debug)]
-struct Board(pub u8);
+enum Token { X, O }
+
+#[derive(Debug)]
+struct Board {
+    pub columns: u8,
+    pub rows: u8,
+    grid: Grid,
+}
+
+impl Board {
+    fn new(rows: u8, columns: u8) -> Self {
+        let grid = (0..rows)
+            .map(|_| (0..columns).map(|_| None).collect::<Row>())
+            .collect::<Grid>();
+
+        Board { rows, columns, grid }
+    }
+}
 
 fn main() {
     println!("Welcome to FourScore!\n");
@@ -15,10 +37,10 @@ fn main() {
     let players = new_players().unwrap();
     let board = new_board().unwrap();
 
-    println!("Players {:?}, playing with board {:?}", players, board);
+    println!("{:?}, playing with {:?}", players, board);
 }
 
-fn new_players() -> Input<Players> {
+fn new_players() -> Input<[Player; 2]> {
     let first = input("First player")?;
     let mut second = input("Second player")?;
 
@@ -26,15 +48,24 @@ fn new_players() -> Input<Players> {
         second = input("Please use a unique name")?;
     }
 
-    Ok(Players(first, second))
+    Ok([
+       Player { name: first,  token: Token::X },
+       Player { name: second, token: Token::O },
+    ])
 }
 
 fn new_board() -> Input<Board> {
-    let choice = input_range(
-        "Play with a (1) standard or (2) custom board",
-        1, 2)?;
+    let choice = input_range("Play with a (1) standard or (2) custom board", 1, 2)?;
 
-    Ok(Board(choice))
+    match choice {
+        1 => Ok(Board::new(7, 7)),
+        _ => {
+            let rows = input_range("Number of rows (4-14)", 4, 14)?;
+            let columns = input_range("Number of columns (4-14)", 4, 14)?;
+
+            Ok(Board::new(rows, columns))
+        },
+    }
 }
 
 fn input_range(prompt: &str, x: u8, y: u8) -> Input<u8> {
