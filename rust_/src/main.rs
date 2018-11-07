@@ -1,35 +1,8 @@
+extern crate fourscore;
+
 use std::io;
 use std::io::Write;
-
-type Input<T> = Result<T, io::Error>;
-type Row = Vec<Option<Token>>;
-type Grid = Vec<Row>;
-
-#[derive(Debug)]
-struct Player {
-    pub name: String,
-    pub token: Token,
-}
-
-#[derive(Debug)]
-enum Token { X, O }
-
-#[derive(Debug)]
-struct Board {
-    pub columns: u8,
-    pub rows: u8,
-    grid: Grid,
-}
-
-impl Board {
-    fn new(rows: u8, columns: u8) -> Self {
-        let grid = (0..rows)
-            .map(|_| (0..columns).map(|_| None).collect())
-            .collect();
-
-        Board { rows, columns, grid }
-    }
-}
+use fourscore::*;
 
 fn main() {
     println!("Welcome to FourScore!\n");
