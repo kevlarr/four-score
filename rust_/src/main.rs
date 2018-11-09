@@ -15,10 +15,10 @@ fn main() {
         println!("{}", board);
 
         let prompt = format!("\n{}, place your \"{}\"", players[p].name, players[p].token);
-        let mut col = input_range(prompt.as_str(), 1, board.columns).unwrap();
+        let mut col = input_range(prompt.as_str(), 1, board.width).unwrap();
 
         while let None = board.insert(col - 1, players[p].token) {
-            col = input_range("Choose an open column", 1, board.columns).unwrap();
+            col = input_range("Choose an open column", 1, board.width).unwrap();
         }
 
         p = 1 - p;
@@ -45,10 +45,10 @@ fn new_board() -> Input<Board> {
     match choice {
         1 => Ok(Board::new(7, 7)),
         _ => {
-            let rows = input_range("Number of rows (4-14)", 4, 14)?;
-            let columns = input_range("Number of columns (4-14)", 4, 14)?;
+            let height = input_range("Number of rows (4-14)", 4, 14)?;
+            let width = input_range("Number of columns (4-14)", 4, 14)?;
 
-            Ok(Board::new(rows, columns))
+            Ok(Board::new(height, width))
         },
     }
 }

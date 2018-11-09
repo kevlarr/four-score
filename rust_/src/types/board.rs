@@ -6,18 +6,18 @@ type Row = Vec<Cell>;
 
 #[derive(Debug)]
 pub struct Board {
-    pub columns: usize,
-    pub rows: usize,
-    grid: Vec<Row>,
+    pub width: usize,
+    pub height: usize,
+    rows: Vec<Row>,
 }
 
 impl Board {
-    pub fn new(rows: usize, columns: usize) -> Self {
-        let grid = (0..rows)
-            .map(|_| (0..columns).map(|_| None).collect())
+    pub fn new(height: usize, width: usize) -> Self {
+        let rows = (0..height)
+            .map(|_| (0..width).map(|_| None).collect())
             .collect();
 
-        Board { rows, columns, grid }
+        Board { height, width, rows }
     }
 
     /// Attempts to place token in given column, returning
@@ -25,14 +25,14 @@ impl Board {
     pub fn insert(&mut self, col: usize, token: Token) -> Option<usize> {
         // match self.find_available_cell(col) {
         //    Some(row) => {
-        //        self.grid[row][col] = token.clone();
+        //        self.rows[row][col] = token.clone();
         //        return Some(row);
         //    },
         //    None => false,
         // }
 
         if let Some(row) = self.find_available_cell(col) {
-            self.grid[row][col] = Some(token);
+            self.rows[row][col] = Some(token);
             return Some(row);
         }
 
@@ -42,11 +42,11 @@ impl Board {
     /// Locates the lowest cell vertically (ie. highest row index),
     /// returning Some(index) or None if all are full.
     fn find_available_cell(&self, col: usize) -> Option<usize> {
-        //for row in self.grid.iter().enumerate().rev() {
+        //for row in self.rows.iter().enumerate().rev() {
         //}
 
-        for row in (0..self.rows).rev() {
-            if let None = self.grid[row][col] {
+        for row in (0..self.height).rev() {
+            if let None = self.rows[row][col] {
                 return Some(row);
             }
         }
@@ -57,9 +57,9 @@ impl Board {
 
 impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "\n  __{}_", "__".repeat(self.columns))?;
+        write!(f, "\n  __{}_", "__".repeat(self.width))?;
 
-        for row in self.grid.iter() {
+        for row in self.rows.iter() {
             write!(f, "\n  | ")?;
 
             for cell in row.iter() {
@@ -72,16 +72,16 @@ impl fmt::Display for Board {
             write!(f, "|")?;
         }
 
-        write!(f, "\n  *‾{}*\n    ", "‾‾".repeat(self.columns as usize))?;
+        write!(f, "\n  *‾{}*\n    ", "‾‾".repeat(self.width as usize))?;
 
         // This is more fun, but way less clear:
         //
-        //   write!(f, "  {}", (1..self.columns)
+        //   write!(f, "  {}", (1..self.width)
         //      .map(|i| i.to_string())
         //      .collect::<Vec<String>>()
         //      .join(" "))?;
 
-        for i in 0..self.columns {
+        for i in 0..self.width {
             write!(f, "{} ", (i + 1).to_string())?;
         }
 
@@ -98,9 +98,9 @@ mod tests {
     fn test_new() {
         let board = Board::new(4, 5);
 
-        assert_eq!(board.rows, 4);
-        assert_eq!(board.columns, 5);
-        assert_eq!(board.grid, vec![
+        assert_eq!(board.height, 4);
+        assert_eq!(board.width, 5);
+        assert_eq!(board.rows, vec![
             vec![None, None, None, None, None],
             vec![None, None, None, None, None],
             vec![None, None, None, None, None],
