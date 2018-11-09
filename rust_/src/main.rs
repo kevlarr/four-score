@@ -15,10 +15,10 @@ fn main() {
         println!("{}", board);
 
         let prompt = format!("\n{}, place your \"{}\"", players[p].name, players[p].token);
-        let mut col = input_range(prompt.as_str(), 1, board.columns + 1).unwrap();
+        let mut col = input_range(prompt.as_str(), 1, board.columns).unwrap();
 
-        while let None = board.insert(col, players[p].token) {
-            col = input_range("Choose an open column", 1, board.columns + 1).unwrap();
+        while let None = board.insert(col - 1, players[p].token) {
+            col = input_range("Choose an open column", 1, board.columns).unwrap();
         }
 
         p = 1 - p;
