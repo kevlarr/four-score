@@ -10,7 +10,7 @@ fn main() {
     let players = new_players().unwrap();
     let board = new_board().unwrap();
 
-    println!("{:?}, playing with {:?}", players, board);
+    println!("{:?}\n{}", players, board);
 }
 
 fn new_players() -> Input<[Player; 2]> {

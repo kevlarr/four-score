@@ -1,4 +1,5 @@
 use super::Token;
+use ::std::fmt;
 
 type Grid = Vec<Row>;
 type Row = Vec<Cell>;
@@ -18,6 +19,40 @@ impl Board {
             .collect();
 
         Board { rows, columns, grid }
+    }
+}
+
+impl fmt::Display for Board {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "\n  __{}_", "__".repeat(self.columns as usize))?;
+
+        for row in self.grid.iter() {
+            write!(f, "\n  | ")?;
+
+            for cell in row.iter() {
+                match cell {
+                    Some(token) => write!(f, "{} ", token)?,
+                    None => write!(f, "· ")?,
+                }
+            }
+
+            write!(f, "|")?;
+        }
+
+        write!(f, "\n  *‾{}*\n    ", "‾‾".repeat(self.columns as usize))?;
+
+        // This is more fun, but way less clear:
+        //
+        //   write!(f, "  {}", (1..self.columns)
+        //      .map(|i| i.to_string())
+        //      .collect::<Vec<String>>()
+        //      .join(" "))?;
+
+        for i in 0..self.columns {
+            write!(f, "{} ", (i + 1).to_string())?;
+        }
+
+        Ok(())
     }
 }
 

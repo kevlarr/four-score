@@ -2,6 +2,7 @@ mod board;
 
 pub use self::board::Board;
 use ::std::io;
+use ::std::fmt;
 
 pub type Input<T> = Result<T, io::Error>;
 
@@ -13,3 +14,12 @@ pub struct Player {
 
 #[derive(Debug, PartialEq)]
 pub enum Token { X, O }
+
+impl fmt::Display for Token {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Token::X => write!(f, "x"),
+            Token::O => write!(f, "o"),
+        }
+    }
+}
