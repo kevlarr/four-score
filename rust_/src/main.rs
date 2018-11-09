@@ -8,9 +8,21 @@ fn main() {
     println!("Welcome to FourScore!\n");
 
     let players = new_players().unwrap();
-    let board = new_board().unwrap();
+    let mut board = new_board().unwrap();
+    let mut p = 0;
 
-    println!("{:?}\n{}", players, board);
+    loop {
+        println!("{}", board);
+
+        let prompt = format!("\n{}, place your \"{}\"", players[p].name, players[p].token);
+        let mut col = input_range(prompt.as_str(), 1, board.columns + 1).unwrap();
+
+        while let None = board.insert(col, players[p].token) {
+            col = input_range("Choose an open column", 1, board.columns + 1).unwrap();
+        }
+
+        p = 1 - p;
+    }
 }
 
 fn new_players() -> Input<[Player; 2]> {
@@ -41,11 +53,11 @@ fn new_board() -> Input<Board> {
     }
 }
 
-fn input_range(prompt: &str, x: u8, y: u8) -> Input<u8> {
+fn input_range(prompt: &str, x: usize, y: usize) -> Input<usize> {
     let mut i = input(prompt)?;
 
     loop {
-        if let Ok(n) = i.parse::<u8>() {
+        if let Ok(n) = i.parse::<usize>() {
             if n >= x && n <= y {
                 return Ok(n);
             }

@@ -1,30 +1,63 @@
 use super::Token;
 use ::std::fmt;
 
-type Grid = Vec<Row>;
-type Row = Vec<Cell>;
 type Cell = Option<Token>;
+type Row = Vec<Cell>;
 
 #[derive(Debug)]
 pub struct Board {
-    pub columns: u8,
-    pub rows: u8,
-    grid: Grid,
+    pub columns: usize,
+    pub rows: usize,
+    grid: Vec<Row>,
 }
 
 impl Board {
-    pub fn new(rows: u8, columns: u8) -> Self {
+    pub fn new(rows: usize, columns: usize) -> Self {
         let grid = (0..rows)
             .map(|_| (0..columns).map(|_| None).collect())
             .collect();
 
         Board { rows, columns, grid }
     }
+
+    /// Attempts to place token in given column, returning
+    /// Some(row) if successful or None if already full
+    pub fn insert(&mut self, col: usize, token: Token) -> Option<usize> {
+        // match self.find_available_cell(col) {
+        //    Some(row) => {
+        //        self.grid[row][col] = token.clone();
+        //        return Some(row);
+        //    },
+        //    None => false,
+        // }
+
+        if let Some(row) = self.find_available_cell(col) {
+            self.grid[row][col] = Some(token);
+            return Some(row);
+        }
+
+        None
+    }
+
+    /// Locates the lowest cell vertically (ie. highest row index),
+    /// returning Some(index) or None if all are full.
+    fn find_available_cell(&self, col: usize) -> Option<usize> {
+        //for row in self.grid.iter().enumerate().rev() {
+        //}
+
+        for row in (0..self.rows).rev() {
+            if let None = self.grid[row][col] {
+                return Some(row);
+            }
+        }
+
+        None
+    }
 }
 
 impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "\n  __{}_", "__".repeat(self.columns as usize))?;
+        write!(f, "\n  __{}_", "__".repeat(self.columns))?;
 
         for row in self.grid.iter() {
             write!(f, "\n  | ")?;

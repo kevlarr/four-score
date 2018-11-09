@@ -12,7 +12,7 @@ pub struct Player {
     pub token: Token,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Token { X, O }
 
 impl fmt::Display for Token {
