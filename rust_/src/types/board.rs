@@ -20,38 +20,16 @@ impl Board {
         Board { height, width, rows }
     }
 
-    /// Attempts to place token in given column, returning
-    /// Some(row) if successful or None if already full
-    pub fn insert(&mut self, col: usize, token: Token) -> Option<usize> {
-        // match self.find_available_cell(col) {
-        //    Some(row) => {
-        //        self.rows[row][col] = token.clone();
-        //        return Some(row);
-        //    },
-        //    None => false,
-        // }
-
-        if let Some(row) = self.find_available_cell(col) {
-            self.rows[row][col] = Some(token);
-            return Some(row);
+    /// Attempts to place token in given column, returning false
+    /// if no open row was found
+    pub fn insert(&mut self, col: usize, token: Token) -> bool {
+        match self.rows.iter_mut().rev().find(|row| row[col] == None) {
+            Some(row) => {
+                row[col] = Some(token);
+                return true;
+            },
+            None => false,
         }
-
-        None
-    }
-
-    /// Locates the lowest cell vertically (ie. highest row index),
-    /// returning Some(index) or None if all are full.
-    fn find_available_cell(&self, col: usize) -> Option<usize> {
-        //for row in self.rows.iter().enumerate().rev() {
-        //}
-
-        for row in (0..self.height).rev() {
-            if let None = self.rows[row][col] {
-                return Some(row);
-            }
-        }
-
-        None
     }
 }
 

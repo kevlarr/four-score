@@ -17,7 +17,7 @@ fn main() {
         let prompt = format!("\n{}, place your \"{}\"", players[p].name, players[p].token);
         let mut col = input_range(prompt.as_str(), 1, board.width).unwrap();
 
-        while let None = board.insert(col - 1, players[p].token) {
+        while !board.insert(col - 1, players[p].token) {
             col = input_range("Choose an open column", 1, board.width).unwrap();
         }
 
