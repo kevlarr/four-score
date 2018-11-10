@@ -1,6 +1,6 @@
 mod board;
 
-pub use self::board::Board;
+pub use self::board::{Board, MoveResult};
 use ::std::io;
 use ::std::fmt;
 

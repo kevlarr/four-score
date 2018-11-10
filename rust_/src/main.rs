@@ -3,6 +3,7 @@ extern crate fourscore;
 use std::io;
 use std::io::Write;
 use fourscore::*;
+use fourscore::MoveResult::*;
 
 fn main() {
     println!("Welcome to FourScore!\n");
@@ -15,10 +16,24 @@ fn main() {
         println!("{}", board);
 
         let prompt = format!("\n{}, place your \"{}\"", players[p].name, players[p].token);
-        let mut col = input_range(prompt.as_str(), 1, board.width).unwrap();
 
-        while !board.insert(col - 1, players[p].token) {
-            col = input_range("Choose an open column", 1, board.width).unwrap();
+        let mut col = get_column(prompt.as_str(), &board);
+
+        loop {
+            match board.insert(col, players[p].token) {
+                GameWon => {
+                    println!("{}\n{} won!", board, players[p].name);
+                    return;
+                },
+                GameDraw => {
+                    println!("{}\nDraw", board);
+                    return;
+                },
+                ColumnFull => {
+                    col = get_column("Choose an open column", &board);
+                },
+                Inserted => break,
+            }
         }
 
         p = 1 - p;
@@ -51,6 +66,11 @@ fn new_board() -> Input<Board> {
             Ok(Board::new(height, width))
         },
     }
+}
+
+fn get_column(prompt: &str, b: &Board) -> usize {
+    // Display is 1-based, so subtract 1
+    return input_range(prompt, 1, b.width).unwrap() - 1;
 }
 
 fn input_range(prompt: &str, x: usize, y: usize) -> Input<usize> {

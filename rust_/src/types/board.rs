@@ -11,6 +11,13 @@ pub struct Board {
     rows: Vec<Row>,
 }
 
+pub enum MoveResult {
+    Inserted,
+    ColumnFull,
+    GameDraw,
+    GameWon,
+}
+
 impl Board {
     pub fn new(height: usize, width: usize) -> Self {
         let rows = (0..height)
@@ -20,15 +27,37 @@ impl Board {
         Board { height, width, rows }
     }
 
-    /// Attempts to place token in given column, returning false
-    /// if no open row was found
-    pub fn insert(&mut self, col: usize, token: Token) -> bool {
-        match self.rows.iter_mut().rev().find(|row| row[col] == None) {
-            Some(row) => {
-                row[col] = Some(token);
-                return true;
-            },
-            None => false,
+    /// Attempts to place token in given column, returning row number
+    /// if successful or None if not
+    pub fn insert(&mut self, col: usize, token: Token) -> MoveResult {
+        for row in (0..self.height).rev() {
+            if let None = self.rows[row][col] {
+                self.rows[row][col] = Some(token);
+
+                if self.won(row, col) {
+                    return MoveResult::GameWon;
+                } else if self.draw(row) {
+                    return MoveResult::GameDraw;
+                }
+
+                return MoveResult::Inserted;
+            }
+        }
+        MoveResult::ColumnFull
+    }
+
+    fn won(&self, row: usize, col: usize) -> bool {
+        false
+    }
+
+    fn draw(&self, row: usize) -> bool {
+        if row > 0 {
+            return false;
+        }
+
+        match self.rows[row].iter().find(|cell| *cell == &None) {
+            Some(cell) => false,
+            None => true,
         }
     }
 }

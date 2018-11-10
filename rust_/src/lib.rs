@@ -1,3 +1,3 @@
 mod types;
 
-pub use types::{Board, Input, Player, Token};
+pub use types::{Board, Input, MoveResult, Player, Token};
