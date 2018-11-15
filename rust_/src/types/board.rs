@@ -46,8 +46,26 @@ impl Board {
         MoveResult::ColumnFull
     }
 
+    /// Bottom row is highest index
+    ///        0  1  .. w-1
+    ///    0 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+    ///    1 |
+    ///    2 |
+    ///   .. |
+    ///  h-1 |
+    ///
     fn won(&self, row: usize, col: usize) -> bool {
-        false
+        self.won_vertically(row, col)
+    }
+
+    fn won_vertically(&self, row: usize, col: usize) -> bool {
+        // Only bother checking if it's at least the 4th token played in col
+        if (row > self.height - 4) { return false; }
+
+        (row + 1 .. row + 4)
+            .map(|i| self.rows[i][col])
+            .find(|cell| cell != &self.rows[row][col])
+            .is_none()
     }
 
     fn draw(&self, row: usize) -> bool {
