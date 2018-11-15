@@ -75,11 +75,11 @@ impl Board {
         let mut in_a_row = 0;
 
         for i in min..max {
-            if self.rows[row][i] == self.rows[row][col] {
-                in_a_row += 1;
+            in_a_row = if self.rows[row][i] == self.rows[row][col] {
+                in_a_row + 1
             } else {
-                in_a_row = 0;
-            }
+                0
+            };
 
             if in_a_row > 3 {
                 return true;
@@ -94,10 +94,9 @@ impl Board {
             return false;
         }
 
-        match self.rows[row].iter().find(|cell| *cell == &None) {
-            Some(cell) => false,
-            None => true,
-        }
+        self.rows[row].iter()
+            .find(|cell| *cell == &None)
+            .is_none()
     }
 }
 
