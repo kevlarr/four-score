@@ -55,7 +55,8 @@ impl Board {
     ///  h-1 |
     ///
     fn won(&self, row: usize, col: usize) -> bool {
-        self.won_vertically(row, col)
+        self.won_vertically(row, col) ||
+        self.won_horizontally(row, col)
     }
 
     fn won_vertically(&self, row: usize, col: usize) -> bool {
@@ -66,6 +67,26 @@ impl Board {
             .map(|i| self.rows[i][col])
             .find(|cell| cell != &self.rows[row][col])
             .is_none()
+    }
+
+    fn won_horizontally(&self, row: usize, col: usize) -> bool {
+        let min = if col < 4 { 0 } else { col - 3 };
+        let max = if col > self.width - 4 { self.width } else { col + 3 };
+        let mut in_a_row = 0;
+
+        for i in min..max {
+            if self.rows[row][i] == self.rows[row][col] {
+                in_a_row += 1;
+            } else {
+                in_a_row = 0;
+            }
+
+            if in_a_row > 3 {
+                return true;
+            }
+        }
+
+        false
     }
 
     fn draw(&self, row: usize) -> bool {
