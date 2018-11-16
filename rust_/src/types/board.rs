@@ -55,13 +55,14 @@ impl Board {
     ///  h-1 |
     ///
     fn won(&self, row: usize, col: usize) -> bool {
-        self.won_vertically(row, col) ||
-        self.won_horizontally(row, col)
+        self.won_vertically(row, col) || self.won_horizontally(row, col) ||
+        self.won_diagonally(row, col) || self.won_antidiagonally(row, col)
     }
 
+    /// Check for win down rows
     fn won_vertically(&self, row: usize, col: usize) -> bool {
         // Only bother checking if it's at least the 4th token played in col
-        if (row > self.height - 4) { return false; }
+        if row > self.height - 4 { return false; }
 
         (row + 1 .. row + 4)
             .map(|i| self.rows[i][col])
@@ -69,6 +70,7 @@ impl Board {
             .is_none()
     }
 
+    /// Check for win across columns
     fn won_horizontally(&self, row: usize, col: usize) -> bool {
         let min = if col < 4 { 0 } else { col - 3 };
         let max = if col > self.width - 4 { self.width } else { col + 3 };
@@ -87,6 +89,42 @@ impl Board {
         }
 
         false
+    }
+
+    /// Check for win in \ direction
+    fn won_diagonally(&self, row: usize, col: usize) -> bool {
+        let token = self.rows[row][col].expect("token should be present");
+
+        self.count_matches(&token, row, -1, col, -1, 0) + // "up" and left
+        self.count_matches(&token, row, 1, col, 1, 0) > 2 // "down" and right
+    }
+
+    /// Check for win in / direction
+    fn won_antidiagonally(&self, row: usize, col: usize) -> bool {
+        let token = self.rows[row][col].expect("token should be present");
+
+        self.count_matches(&token, row, 1, col, -1, 0) + // "down" and left
+        self.count_matches(&token, row, -1, col, 1, 0) > 2 // "up" and right
+    }
+
+    fn count_matches(&self,
+        token: &Token,
+        row: usize, dr: isize,
+        col: usize, dc: isize,
+        acc: usize,
+    ) -> usize {
+        let new_row = (row as isize + dr) as usize;
+        let new_col = (col as isize + dc) as usize;
+
+        // -1 will wrap to a big number, so only need to check if greater than
+        if new_row >= self.height || new_col >= self.width { return acc; }
+
+        match &self.rows[new_row][new_col] {
+            Some(t) if t == token =>
+                self.count_matches(token, new_row, dr, new_col, dc, acc + 1),
+            _ =>
+                acc,
+        }
     }
 
     fn draw(&self, row: usize) -> bool {
