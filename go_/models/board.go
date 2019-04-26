@@ -41,6 +41,10 @@ func (b *Board) Receive(col int, token string) (int, error) {
     return -1, errors.New("Column is full")
 }
 
+func (b *Board) Inspect(row int, col int) (win bool, draw bool) {
+    return
+}
+
 func NewBoard() Board {
     var rows [][]string
 

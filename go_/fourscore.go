@@ -22,7 +22,10 @@ func main() {
 
     for {
         player = players[current]
-        playRound(&player, &board)
+
+        row, col  := playPiece(&player, &board)
+        win, draw := board.Inspect(row, col)
+
         current = 1 - current
     }
 }
@@ -38,21 +41,22 @@ func createBoard() models.Board {
     return models.NewBoard()
 }
 
-func playRound(player *models.Player, board *models.Board) {
-    var row int
+func playPiece(player *models.Player, board *models.Board) (row int, col int) {
+    var err error
     board.Print()
 
     for {
         player.Prompt()
-        choice, _   := reader.ReadString('\n')
-        column, err := strconv.Atoi(strings.TrimSpace(choice))
+        choice, _  := reader.ReadString('\n')
+        col, err = strconv.Atoi(strings.TrimSpace(choice))
 
         if err != nil { continue }
 
-        row, err = board.Receive(column - 1, player.Token())
+        col--
+        row, err = board.Receive(col, player.Token())
 
         if err == nil { break }
     }
 
-    fmt.Printf("row: %v\n", row)
+    return
 }
