@@ -16,6 +16,12 @@ func (b *Board) Print() {
         fmt.Printf("  | %s |\n", strings.Join(b.rows[i], " "))
     }
     fmt.Printf("  *%s*\n", strings.Repeat("‾", len(b.rows[0]) * 2 + 1))
+    fmt.Print("   ")
+
+    for i, _ := range b.rows[0] {
+        fmt.Printf(" %v", i + 1)
+    }
+    fmt.Println("\n")
 }
 
 func NewBoard() Board {
