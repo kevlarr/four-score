@@ -2,7 +2,6 @@ package main
 
 import (
     "bufio"
-    "errors"
     "fmt"
     "fourscore/models"
     "os"
@@ -40,21 +39,20 @@ func createBoard() models.Board {
 }
 
 func playRound(player *models.Player, board *models.Board) {
+    var row int
     board.Print()
-    player.Prompt()
 
-    choice, _   := reader.ReadString('\n')
-    parsed, err := strconv.ParseInt(strings.TrimSpace(choice), 0, 8)
-
-    for err != nil {
+    for {
         player.Prompt()
-        choice, _   = reader.ReadString('\n')
-        parsed, err = strconv.ParseInt(strings.TrimSpace(choice), 0, 8)
+        choice, _   := reader.ReadString('\n')
+        column, err := strconv.Atoi(strings.TrimSpace(choice))
 
-        if err == nil && (parsed < 1 || parsed > 7) {
-            err = errors.New("Must be 1-7")
-        }
+        if err != nil { continue }
+
+        row, err = board.Receive(column - 1, player.Token())
+
+        if err == nil { break }
     }
 
-    fmt.Println(parsed)
+    fmt.Printf("row: %v\n", row)
 }
