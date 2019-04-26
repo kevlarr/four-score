@@ -5,8 +5,6 @@ import (
     "fmt"
     "fourscore/models"
     "os"
-    "strconv"
-    "strings"
 )
 
 var reader = bufio.NewReader(os.Stdin)
@@ -23,8 +21,10 @@ func main() {
     for {
         player = players[current]
 
-        row, col  := playPiece(&player, &board)
+        row, col  := player.PlayToken(reader, &board)
         win, draw := board.Inspect(row, col)
+
+        fmt.Printf("win: %v, draw: %v\n", win, draw)
 
         current = 1 - current
     }
@@ -39,24 +39,4 @@ func createPlayers() []models.Player {
 
 func createBoard() models.Board {
     return models.NewBoard()
-}
-
-func playPiece(player *models.Player, board *models.Board) (row int, col int) {
-    var err error
-    board.Print()
-
-    for {
-        player.Prompt()
-        choice, _  := reader.ReadString('\n')
-        col, err = strconv.Atoi(strings.TrimSpace(choice))
-
-        if err != nil { continue }
-
-        col--
-        row, err = board.Receive(col, player.Token())
-
-        if err == nil { break }
-    }
-
-    return
 }
