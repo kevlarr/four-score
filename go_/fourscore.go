@@ -33,9 +33,9 @@ func main() {
     board.Print()
 
     if win {
-        fmt.Printf("nice job, %s :)\n", player.Name())
+        fmt.Printf("%s, nice job :)\n\n", player.Name())
     } else {
-        fmt.Println("draw :(")
+        fmt.Println("draw :(\n")
     }
 }
 

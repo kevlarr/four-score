@@ -42,7 +42,9 @@ func (b *Board) Receive(col int, token string) (int, error) {
 }
 
 func (b *Board) Inspect(row, col int) (win bool, draw bool) {
-    win = b.wonVertically(row, col) || b.wonHorizontally(row, col)
+    win =
+        b.wonVertical(row, col) || b.wonHorizontal(row, col) ||
+        b.wonDiagonal(row, col) || b.wonAntidiagonal(row, col)
 
     if win { return }
 
@@ -54,33 +56,37 @@ func (b *Board) Inspect(row, col int) (win bool, draw bool) {
     return
 }
 
-func (b *Board) wonVertically(row, col int) bool {
+func (b *Board) wonVertical(row, col int) bool {
     if row > 3 { return false }
 
-    token := b.rows[row][col]
-
-    for r := row; r < row + 4; r++ {
-        if b.rows[r][col] != token { return false }
-    }
-    return true
+    return b.count(row, 1, col, 0) > 2
 }
 
-func (b *Board) wonHorizontally(row, col int) bool {
-    token := b.rows[row][col]
-    count := 1
+func (b *Board) wonHorizontal(row, col int) bool {
+    return b.count(row, 0, col, 1) + b.count(row, 0, col, -1) > 2
+}
 
-    for c := col + 1; c < 7; c++ {
-        if b.rows[row][c] != token { break }
+func (b *Board) wonDiagonal(row, col int) bool { // Direction: \
+    return b.count(row, 1, col, 1) + b.count(row, -1, col, -1) > 2
+}
+
+func (b *Board) wonAntidiagonal(row, col int) bool { // Direction: /
+    return b.count(row, -1, col, 1) + b.count(row, 1, col, -1) > 2
+}
+
+func (b *Board) count(row, dRow, col, dCol int) (count int) {
+    token, count := b.rows[row][col], 0
+
+    for r, c := row + dRow, col + dCol; b.inBounds(r, c); {
+        if b.rows[r][c] != token { break }
+        r, c = r + dRow, c + dCol
         count++
     }
+    return
+}
 
-    for c := col - 1; c >= 0; c-- {
-        if b.rows[row][c] != token { break }
-        count++
-    }
-
-    fmt.Printf("count: %v\n", count)
-    return count > 3
+func (b *Board) inBounds(row, col int) bool {
+    return row >= 0 && col >= 0 && row < 7 && col < 7
 }
 
 func NewBoard() Board {
