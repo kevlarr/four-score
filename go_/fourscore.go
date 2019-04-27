@@ -17,16 +17,25 @@ func main() {
     current := 0
 
     var player models.Player
+    var win, draw bool
 
     for {
         player = players[current]
 
-        row, col  := player.PlayToken(reader, &board)
-        win, draw := board.Inspect(row, col)
+        board.Print()
+        row, col := player.PlayToken(reader, &board)
+        win, draw = board.Inspect(row, col)
 
-        fmt.Printf("win: %v, draw: %v\n", win, draw)
+        if win || draw { break }
 
         current = 1 - current
+    }
+    board.Print()
+
+    if win {
+        fmt.Printf("nice job, %s :)\n", player.Name())
+    } else {
+        fmt.Println("draw :(")
     }
 }
 

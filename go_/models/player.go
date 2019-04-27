@@ -12,13 +12,16 @@ type Player struct {
     token string
 }
 
+func (p *Player) Name() string {
+    return p.name
+}
+
 func (p *Player) Prompt() {
     fmt.Printf("%s, place your \"%s\": ", p.name, p.token)
 }
 
 func (p *Player) PlayToken(r *bufio.Reader, board *Board) (row int, col int) {
     var err error
-    board.Print()
 
     for {
         p.Prompt()

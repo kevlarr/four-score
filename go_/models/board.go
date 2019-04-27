@@ -41,8 +41,46 @@ func (b *Board) Receive(col int, token string) (int, error) {
     return -1, errors.New("Column is full")
 }
 
-func (b *Board) Inspect(row int, col int) (win bool, draw bool) {
+func (b *Board) Inspect(row, col int) (win bool, draw bool) {
+    win = b.wonVertically(row, col) || b.wonHorizontally(row, col)
+
+    if win { return }
+
+    for _, v := range b.rows[0] {
+        if v == defaultCell { return }
+    }
+
+    draw = true
     return
+}
+
+func (b *Board) wonVertically(row, col int) bool {
+    if row > 3 { return false }
+
+    token := b.rows[row][col]
+
+    for r := row; r < row + 4; r++ {
+        if b.rows[r][col] != token { return false }
+    }
+    return true
+}
+
+func (b *Board) wonHorizontally(row, col int) bool {
+    token := b.rows[row][col]
+    count := 1
+
+    for c := col + 1; c < 7; c++ {
+        if b.rows[row][c] != token { break }
+        count++
+    }
+
+    for c := col - 1; c >= 0; c-- {
+        if b.rows[row][c] != token { break }
+        count++
+    }
+
+    fmt.Printf("count: %v\n", count)
+    return count > 3
 }
 
 func NewBoard() Board {
