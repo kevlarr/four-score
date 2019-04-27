@@ -13,3 +13,5 @@ Not many, honestly..
 Each game should accept two players, require unique names, allow for custom board sizes,
 verify correct input on every prompt, and oh - obviously each game must be able to
 calculate a winning move in any direction.
+
+And the "requirements" keep getting more lax each time...
